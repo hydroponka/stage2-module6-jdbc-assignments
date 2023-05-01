@@ -24,66 +24,42 @@ public class CustomDataSource implements DataSource {
     private final String url;
     private final String name;
     private final String password;
-    private Connection connection;
 
-    private CustomDataSource(String driver, String url, String password, String name) {
+    private CustomDataSource(String driver, String url, String name, String password) {
         this.driver = driver;
-        try {
-            Class.forName(this.driver);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
         this.url = url;
         this.name = name;
         this.password = password;
+        try {
+            Class.forName(driver);
+        } catch (ClassNotFoundException e) {
+            Logger.getLogger(CustomDataSource.class.getName()).severe("Failed to load JDBC driver: " + driver);
+        }
     }
 
     public static CustomDataSource getInstance() {
         if (instance == null) {
-            Properties properties = loadProperties("app.properties");
             synchronized (CustomDataSource.class) {
                 if (instance == null) {
-                    instance = new CustomDataSource(properties.getProperty("postgres.driver"), properties.getProperty("postgres.url"), properties.getProperty("postgres.password"), properties.getProperty("postgres.name"));
+                    String driver = "org.postgresql.Driver";
+                    String url = "jdbc:postgresql://localhost:5432/myfirstdb";
+                    String name = "postgres";
+                    String password = "root";
+                    instance = new CustomDataSource(driver, url, name, password);
                 }
             }
         }
         return instance;
     }
 
-    public Connection getConnection() {
-        try {
-            if (connection == null || connection.isClosed()) {
-                connection = DriverManager.getConnection(url,name,password);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return connection;
+    public Connection getConnection() throws SQLException {
+        return new CustomConnector().getConnection(url, name, password);
     }
-    private static Properties loadProperties(String propertiesFilename){
-        Properties properties = new Properties();
-        ClassLoader loader = CustomDataSource.class.getClassLoader();
-        try (InputStream stream = loader.getResourceAsStream(propertiesFilename)){
-            if (stream == null){
-                throw new FileNotFoundException();
-            }
-            properties.load(stream);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        return properties;
-    }
-    @Override
+
     public Connection getConnection(String username, String password) throws SQLException {
-        try {
-            if (connection == null || connection.isClosed()) {
-                connection = DriverManager.getConnection(url,username,password);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return connection;
+        return new CustomConnector().getConnection(url, username, password);
     }
+
 
     @Override
     public PrintWriter getLogWriter() throws SQLException {

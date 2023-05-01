@@ -9,24 +9,14 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class CustomConnector {
-    public Connection getConnection(String url) {
-        try {
-            Connection connection = DriverManager.getConnection(url);
-            return connection;
-        } catch (SQLException  e) {
-            e.printStackTrace();
-            return null;
-        }
+    public Connection getConnection(String url) throws SQLException {
+        return DriverManager.getConnection(url);
     }
 
-    public Connection getConnection(String url, String user, String password)  {
-        try {
-            Connection connection = DriverManager.getConnection(url, user, password);
-            return connection;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public Connection getConnection(String url, String user, String password) throws SQLException {
+        Properties props = new Properties();
+        props.setProperty("user", user);
+        props.setProperty("password", password);
+        return DriverManager.getConnection(url, props);
     }
 }
-
