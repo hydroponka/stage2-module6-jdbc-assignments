@@ -45,6 +45,7 @@ public class SimpleJDBCRepository {
             e.printStackTrace();
         } finally {
             try {
+                connection.commit();
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
