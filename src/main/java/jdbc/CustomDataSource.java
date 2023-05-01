@@ -75,7 +75,14 @@ public class CustomDataSource implements DataSource {
     }
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return null;
+        try {
+            if (connection == null || connection.isClosed()) {
+                connection = DriverManager.getConnection(url,username,password);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return connection;
     }
 
     @Override
