@@ -20,12 +20,13 @@ public class SimpleJDBCRepository {
     private PreparedStatement ps = null;
     private Statement st = null;
 
-    private static final String CREATE_USER_SQL = "INSERT INTO myusers (id, firstname, lastname, age) VALUES (?, ?, ?, ?)";
-    private static final String UPDATE_USER_SQL = "UPDATE myusers SET firstname = ?, lastname = ?, age = ? WHERE id = ?";
-    private static final String DELETE_USER_SQL = "DELETE FROM myusers WHERE id = ?";
-    private static final String FIND_USER_BY_ID_SQL = "SELECT * FROM myusers WHERE id = ?";
-    private static final String FIND_USER_BY_NAME_SQL = "SELECT * FROM myusers WHERE firstname = ?";
-    private static final String FIND_ALL_USERS_SQL = "SELECT * FROM myusers";
+    private static final String TABLE_NAME = "myusers";
+    private static final String CREATE_USER_SQL = "INSERT INTO " + TABLE_NAME + " (firstname, lastname, age) VALUES (?, ?, ?)";
+    private static final String UPDATE_USER_SQL = "UPDATE " + TABLE_NAME + " SET firstname = ?, lastname = ?, age = ? WHERE id = ?";
+    private static final String DELETE_USER_SQL = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
+    private static final String FIND_USER_BY_ID_SQL = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
+    private static final String FIND_USER_BY_NAME_SQL = "SELECT * FROM " + TABLE_NAME + " WHERE firstname = ? OR lastname = ?";
+    private static final String FIND_ALL_USERS_SQL = "SELECT * FROM " + TABLE_NAME;
 
     public Long createUser(User user) {
         try (Connection connection = CustomDataSource.getInstance().getConnection();
