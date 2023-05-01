@@ -28,6 +28,11 @@ public class CustomDataSource implements DataSource {
 
     private CustomDataSource(String driver, String url, String password, String name) {
         this.driver = driver;
+        try {
+            Class.forName(this.driver);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         this.url = url;
         this.name = name;
         this.password = password;
@@ -39,11 +44,6 @@ public class CustomDataSource implements DataSource {
             synchronized (CustomDataSource.class) {
                 if (instance == null) {
                     instance = new CustomDataSource(properties.getProperty("postgres.driver"), properties.getProperty("postgres.url"), properties.getProperty("postgres.password"), properties.getProperty("postgres.name"));
-                }
-                try {
-                    Class.forName(getInstance().driver);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
                 }
             }
         }
