@@ -27,7 +27,7 @@ public class SimpleJDBCRepository {
     private static final String FIND_USER_BY_NAME_SQL = "SELECT * FROM myusers WHERE firstname = ?";
     private static final String FIND_ALL_USERS_SQL = "SELECT * FROM myusers";
 
-    public Long createUser(User user) throws SQLException {
+    public Long createUser(User user) {
         Long id = null;
         try {
             connection = CustomDataSource.getInstance().getConnection();
@@ -44,12 +44,16 @@ public class SimpleJDBCRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connection.close();
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return id;
     }
 
-    public User findUserById(Long userId) throws SQLException {
+    public User findUserById(Long userId) {
         User user = null;
         try {
             connection = CustomDataSource.getInstance().getConnection();
@@ -62,12 +66,16 @@ public class SimpleJDBCRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connection.close();
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return user;
     }
 
-    public User findUserByName(String userName) throws SQLException {
+    public User findUserByName(String userName){
         User user = null;
         try {
             connection = CustomDataSource.getInstance().getConnection();
@@ -80,12 +88,16 @@ public class SimpleJDBCRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connection.close();
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return user;
     }
 
-    public List<User> findAllUser() throws SQLException {
+    public List<User> findAllUser() {
         List<User> users = new ArrayList<>();
         try {
             connection = CustomDataSource.getInstance().getConnection();
@@ -98,12 +110,16 @@ public class SimpleJDBCRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            connection.close();
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return users;
     }
 
-    public User updateUser(User user) throws SQLException {
+    public User updateUser(User user) {
         try {
             connection = CustomDataSource.getInstance().getConnection();
             ps = connection.prepareStatement(UPDATE_USER_SQL);
@@ -119,13 +135,17 @@ public class SimpleJDBCRepository {
         }catch (SQLException e) {
             e.printStackTrace();
         }finally {
-            connection.close();
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
 
 
-    public void deleteUser(Long userId) throws SQLException {
+    public void deleteUser(Long userId) {
         try {
             connection = CustomDataSource.getInstance().getConnection();
             ps = connection.prepareStatement(DELETE_USER_SQL);
@@ -134,7 +154,11 @@ public class SimpleJDBCRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
-            connection.close();
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
