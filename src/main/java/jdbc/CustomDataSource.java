@@ -35,9 +35,10 @@ public class CustomDataSource implements DataSource {
 
     public static CustomDataSource getInstance() {
         if (instance == null) {
+            Properties properties = loadProperties("app.properties");
             synchronized (CustomDataSource.class) {
                 if (instance == null) {
-                    instance = new CustomDataSource("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/myfirstdb", "root", "postgres");
+                    instance = new CustomDataSource(properties.getProperty("postgres.driver"), properties.getProperty("postgres.url"), properties.getProperty("postgres.password"), properties.getProperty("postgres.name"));
                 }
             }
         }
@@ -47,12 +48,25 @@ public class CustomDataSource implements DataSource {
     public Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
-                connection = DriverManager.getConnection(url, name, password);
+                connection = DriverManager.getConnection(url,name,password);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return connection;
+    }
+    private static Properties loadProperties(String propertiesFilename){
+        Properties properties = new Properties();
+        ClassLoader loader = CustomDataSource.class.getClassLoader();
+        try (InputStream stream = loader.getResourceAsStream(propertiesFilename)){
+            if (stream == null){
+                throw new FileNotFoundException();
+            }
+            properties.load(stream);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return properties;
     }
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
