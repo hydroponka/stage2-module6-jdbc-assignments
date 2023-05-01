@@ -5,10 +5,14 @@ import javax.sql.DataSource;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 @Getter
@@ -36,8 +40,9 @@ public class CustomDataSource implements DataSource {
         if (instance == null) {
             synchronized (CustomDataSource.class) {
                 if (instance == null) {
-                    String driver = "org.postgresql.Driver";
-                    String url = "jdbc:postgresql://localhost:5432/myfirstdb";
+                    Properties properties = loadProperties("app.properties");
+                    String driver = properties.getProperty("postgres.driver");
+                    String url = properties.getProperty("postgres.url");
                     String name = "postgres";
                     String password = "root";
                     instance = new CustomDataSource(driver, url, name, password);
@@ -45,6 +50,19 @@ public class CustomDataSource implements DataSource {
             }
         }
         return instance;
+    }
+    private static Properties loadProperties(String propertiesFilename){
+        Properties properties = new Properties();
+        ClassLoader loader = CustomDataSource.class.getClassLoader();
+        try (InputStream stream = loader.getResourceAsStream(propertiesFilename)){
+            if (stream == null){
+                throw new FileNotFoundException();
+            }
+            properties.load(stream);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return properties;
     }
 
     public Connection getConnection() throws SQLException {
