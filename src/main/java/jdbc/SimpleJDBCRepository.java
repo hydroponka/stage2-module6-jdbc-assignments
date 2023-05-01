@@ -20,12 +20,12 @@ public class SimpleJDBCRepository {
     private PreparedStatement ps = null;
     private Statement st = null;
 
-    private static final String CREATE_USER_SQL = "INSERT INTO myusers (id, firstname, lastname, age) VALUES (?, ?, ?, ?)";
-    private static final String UPDATE_USER_SQL = "UPDATE myusers SET firstname = ?, lastname = ?, age = ? WHERE id = ?";
-    private static final String DELETE_USER_SQL = "DELETE FROM myusers WHERE id = ?";
-    private static final String FIND_USER_BY_ID_SQL = "SELECT * FROM myusers WHERE id = ?";
-    private static final String FIND_USER_BY_NAME_SQL = "SELECT * FROM myusers WHERE firstname = ?";
-    private static final String FIND_ALL_USERS_SQL = "SELECT * FROM myusers";
+    private static final String CREATE_USER_SQL = "INSERT INTO MYUSERS (id, firstname, lastname, age) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_USER_SQL = "UPDATE MYUSERS SET firstname = ?, lastname = ?, age = ? WHERE id = ?";
+    private static final String DELETE_USER_SQL = "DELETE FROM MYUSERS WHERE id = ?";
+    private static final String FIND_USER_BY_ID_SQL = "SELECT * FROM MYUSERS WHERE id = ?";
+    private static final String FIND_USER_BY_NAME_SQL = "SELECT * FROM MYUSERS WHERE firstname = ?";
+    private static final String FIND_ALL_USERS_SQL = "SELECT * FROM MYUSERS";
 
     public Long createUser(User user) {
         Long id = null;
@@ -45,7 +45,6 @@ public class SimpleJDBCRepository {
             e.printStackTrace();
         } finally {
             try {
-                connection.commit();
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
