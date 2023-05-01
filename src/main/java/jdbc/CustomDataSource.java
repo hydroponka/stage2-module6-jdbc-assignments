@@ -40,6 +40,11 @@ public class CustomDataSource implements DataSource {
                 if (instance == null) {
                     instance = new CustomDataSource(properties.getProperty("postgres.driver"), properties.getProperty("postgres.url"), properties.getProperty("postgres.password"), properties.getProperty("postgres.name"));
                 }
+                try {
+                    Class.forName(getInstance().driver);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return instance;
